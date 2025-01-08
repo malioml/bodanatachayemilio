@@ -204,6 +204,20 @@
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="addBaby()">Agregar Otro Bebé</button>
 
+                <!-- Transporte y Zona -->
+                <div class="form-group mt-4">
+                    <label for="transportRequired">¿Necesitas transporte?</label>
+                    <select id="transportRequired" name="transport_required" class="form-control">
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <option value="si">Sí</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accommodationZone">Zona donde te alojas:</label>
+                    <input type="text" id="accommodationZone" name="accommodation_zone" class="form-control" placeholder="Ej. La Orotava, Puerto de la Cruz">
+                </div>
+
                 <button type="submit" class="btn btn-custom btn-block">Enviar</button>
             </form>
             <div id="alertRSVP" class="alert alert-custom" style="display: none;"></div>
@@ -334,6 +348,9 @@
         rsvpForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
+            var needsTransport = document.getElementById('needsTransport').value;
+            var lodgingArea = document.getElementById('lodgingArea').value;
+
             var adultNames = document.querySelectorAll('input[name="adult_name[]"]');
             var adultSurnames = document.querySelectorAll('input[name="adult_surname[]"]');
             var adultAllergies = document.querySelectorAll('input[name="adult_allergies[]"]');
@@ -378,7 +395,9 @@
             db.collection('rsvp').add({
                 adults: adults,
                 children: children,
-                babies: babies
+                babies: babies,
+                needsTransport: needsTransport,
+                lodgingArea: lodgingArea
             })
             .then(function() {
               document.getElementById('rsvpForm').style.display = 'none';
