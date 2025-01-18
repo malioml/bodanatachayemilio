@@ -180,17 +180,12 @@
                     <div class="form-group">
                         <input type="text" class="form-control" name="child_name[]" placeholder="Nombre">
                         <input type="text" class="form-control" name="child_surname[]" placeholder="Apellidos">
+                        <input type="text" class="form-control" name="child_age[]" placeholder="Edad">
                         <input type="text" class="form-control" name="child_allergies[]" placeholder="Intolerancias Alimentarias">
-                    </div>
-                </div>
-                <button type="button" class="btn btn-secondary" onclick="addChild()">Agregar Otro Niño</button>
-
-                <!-- Bebés -->
-                <div id="babiesContainer" class="entry-container">
-                    <h4 class="section-title">Bebés</h4>
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="baby_name[]" placeholder="Nombre">
-                        <input type="text" class="form-control" name="baby_surname[]" placeholder="Apellidos">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="babyNeedsMenu" name="baby_needs_menu[]">
+                            <label class="form-check-label" for="babyNeedsMenu">¿Vas a querer menú?</label>
+                        </div>
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="highChair" name="baby_needs_high_chair[]">
                             <label class="form-check-label" for="highChair">Necesita trona</label>
@@ -201,7 +196,8 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-secondary" onclick="addBaby()">Agregar Otro Bebé</button>
+                <button type="button" class="btn btn-secondary" onclick="addChild()">Agregar Otro Niño</button>
+            
 
                 <!-- Transporte y Zona -->
                 <div class="form-group mt-4">
@@ -214,9 +210,12 @@
                     <p>Estamos barajando contratar una guagua con la ruta: Garachico <-> Icod de los vinos <-> Hacienda San Felipe</p>
                 </div>
                 <div class="form-group">
-                    <label for="accommodationZone">Zona donde te alojas:</label>
-                    <input type="text" id="lodging_area" name="lodging_area" class="form-control" placeholder="Ej. La Orotava, Puerto de la Cruz">
-                </div>
+                    <label for="prebodaAttendance">¿Vienes a la preboda? Se celebrará en Garachico el viernes de 16:00 a 22:00 aproximadamente.</label>
+                    <select id="prebodaAttendance" name="preboda_attendance" class="form-control" required>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>        
 
                 <button type="submit" class="btn btn-custom btn-block">Enviar</button>
             </form>
@@ -307,21 +306,12 @@
                 <div class="form-group">
                     <input type="text" class="form-control" name="child_name[]" placeholder="Nombre">
                     <input type="text" class="form-control" name="child_surname[]" placeholder="Apellidos">
+                    <input type="text" class="form-control" name="child_age[]" placeholder="Edad">
                     <input type="text" class="form-control" name="child_allergies[]" placeholder="Intolerancias Alimentarias">
-                </div>
-                <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeEntry(this)">Eliminar</button>
-            `;
-            container.appendChild(div);
-        }
-
-        function addBaby() {
-            var container = document.getElementById('babiesContainer');
-            var div = document.createElement('div');
-            div.className = 'entry-container';
-            div.innerHTML = `
-                <div class="form-group">
-                    <input type="text" class="form-control" name="baby_name[]" placeholder="Nombre">
-                    <input type="text" class="form-control" name="baby_surname[]" placeholder="Apellidos">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="babyNeedsMenu" name="baby_needs_menu[]">
+                        <label class="form-check-label" for="babyNeedsMenu">¿Vas a querer menú?</label>
+                    </div>
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="highChair" name="baby_needs_high_chair[]">
                         <label class="form-check-label" for="highChair">Necesita trona</label>
@@ -350,7 +340,7 @@
             e.preventDefault();
 
             var needsTransport = document.getElementById('needs_transport').value;
-            var lodgingArea = document.getElementById('lodging_area').value;
+            var prebodaAttendance = document.getElementById('prebodaAttendance').value;
 
             var adultNames = document.querySelectorAll('input[name="adult_name[]"]');
             var adultSurnames = document.querySelectorAll('input[name="adult_surname[]"]');
@@ -358,12 +348,12 @@
 
             var childNames = document.querySelectorAll('input[name="child_name[]"]');
             var childSurnames = document.querySelectorAll('input[name="child_surname[]"]');
+            var childAge = document.querySelectorAll('input[name="child_agechild_age[]"]');
             var childAllergies = document.querySelectorAll('input[name="child_allergies[]"]');
-
-            var babyNames = document.querySelectorAll('input[name="baby_name[]"]');
-            var babySurnames = document.querySelectorAll('input[name="baby_surname[]"]');
+            var babyNeedsMenu = document.querySelectorAll('input[name="baby_needs_menu[]"]:checked');
             var babyNeedsHighChair = document.querySelectorAll('input[name="baby_needs_high_chair[]"]:checked');
             var babyNeedsCarriageSpace = document.querySelectorAll('input[name="baby_needs_carriage_space[]"]:checked');
+         
 
             var adults = [];
             for (var i = 0; i < adultNames.length; i++) {
@@ -379,26 +369,18 @@
                 children.push({
                     name: childNames[i].value,
                     surname: childSurnames[i].value,
-                    allergies: childAllergies[i].value
-                });
-            }
-
-            var babies = [];
-            for (var i = 0; i < babyNames.length; i++) {
-                babies.push({
-                    name: babyNames[i].value,
-                    surname: babySurnames[i].value,
+                    age: childAge[i].value,
+                    allergies: childAllergies[i].value,
                     needsHighChair: babyNeedsHighChair[i] !== undefined,
                     needsCarriageSpace: babyNeedsCarriageSpace[i] !== undefined
                 });
-            }
+            
 
             db.collection('rsvp').add({
                 adults: adults,
                 children: children,
-                babies: babies,
                 needsTransport: needsTransport,
-                lodgingArea: lodgingArea
+                prebodaAttendance: prebodaAttendance
             })
             .then(function() {
               document.getElementById('rsvpForm').style.display = 'none';
