@@ -140,6 +140,8 @@
         <!-- Cabecera con Imagen -->
         <div class="header">
             <h1>¡Estás Invitado a Nuestra Boda!</h1>
+            <br>
+            <h1>Natacha & Emilio</h1>
             <p>22 de febrero de 2025</p>
         </div>
 
@@ -154,7 +156,7 @@
         </div>
 
         <div class="container map-section">
-            <h2 class="text-center">¿A qué día y a qué hora se celebra?</h2>
+            <h2 class="text-center">¿Qué día y a qué hora se celebra?</h2>
             <p class="text-center">22/02/2025 a las 12:30am</p>
         </div>
         
@@ -184,7 +186,7 @@
                         <input type="text" class="form-control" name="child_allergies[]" placeholder="Intolerancias Alimentarias">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="babyNeedsMenu" name="baby_needs_menu[]">
-                            <label class="form-check-label" for="babyNeedsMenu">¿Vas a querer menú?</label>
+                            <label class="form-check-label" for="babyNeedsMenu">¿Necesitas menú?</label>
                         </div>
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="highChair" name="baby_needs_high_chair[]">
@@ -201,17 +203,17 @@
 
                 <!-- Transporte y Zona -->
                 <div class="form-group mt-4">
-                    <label for="needs_transport">¿Necesitas transporte?</label>
+                    <label for="needs_transport">¿Necesitas transporte?</label> <span>Estamos barajando contratar una guagua con la ruta: Garachico - Icod de los vinos - Hacienda San Felipe</span>
                     <select id="needs_transport" name="needs_transport" class="form-control">
                         <option value="" disabled selected>Selecciona una opción</option>
                         <option value="si">Sí</option>
                         <option value="no">No</option>
                     </select>
-                    <p>Estamos barajando contratar una guagua con la ruta: Garachico <-> Icod de los vinos <-> Hacienda San Felipe</p>
                 </div>
                 <div class="form-group">
-                    <label for="prebodaAttendance">¿Vienes a la preboda? Se celebrará en Garachico el viernes de 16:00 a 22:00 aproximadamente.</label>
+                    <label for="prebodaAttendance">¿Venís a la preboda? Se celebrará en Garachico el viernes de 16:00 a 22:00 aproximadamente.</label>
                     <select id="prebodaAttendance" name="preboda_attendance" class="form-control" required>
+                        <option value="" disabled selected>Selecciona una opción</option>
                         <option value="Sí">Sí</option>
                         <option value="No">No</option>
                     </select>
@@ -224,6 +226,11 @@
                 <p>¡Gracias por enviarnos la información! Nos pondremos en contacto contigo pronto.</p>
             </div>
         </div>
+
+        <footer style="background-color: #444; color: #fff; text-align: center; padding: 20px; margin-top: 40px;">
+            <p style="margin: 5px 0; font-size: 14px;">Si tienes dudas, contáctanos por cualquier medio!</p>
+            <p style="margin: 0; font-size: 12px;">© 2025 Natacha & Emilio.</p>
+        </footer>
     </div>
 
     <!-- SDK de Firebase -->
@@ -348,12 +355,12 @@
 
             var childNames = document.querySelectorAll('input[name="child_name[]"]');
             var childSurnames = document.querySelectorAll('input[name="child_surname[]"]');
-            var childAge = document.querySelectorAll('input[name="child_agechild_age[]"]');
+            var childAge = document.querySelectorAll('input[name="child_age[]"]');
             var childAllergies = document.querySelectorAll('input[name="child_allergies[]"]');
             var babyNeedsMenu = document.querySelectorAll('input[name="baby_needs_menu[]"]:checked');
             var babyNeedsHighChair = document.querySelectorAll('input[name="baby_needs_high_chair[]"]:checked');
             var babyNeedsCarriageSpace = document.querySelectorAll('input[name="baby_needs_carriage_space[]"]:checked');
-         
+
 
             var adults = [];
             for (var i = 0; i < adultNames.length; i++) {
@@ -371,28 +378,30 @@
                     surname: childSurnames[i].value,
                     age: childAge[i].value,
                     allergies: childAllergies[i].value,
+                    babyNeedsMenu: babyNeedsMenu[i] !== undefined,
                     needsHighChair: babyNeedsHighChair[i] !== undefined,
                     needsCarriageSpace: babyNeedsCarriageSpace[i] !== undefined
                 });
-            
 
-            db.collection('rsvp').add({
-                adults: adults,
-                children: children,
-                needsTransport: needsTransport,
-                prebodaAttendance: prebodaAttendance
-            })
-            .then(function() {
-              document.getElementById('rsvpForm').style.display = 'none';
-              var thankYouMessage = document.getElementById('thankYouMessage');
-              thankYouMessage.style.display = 'block';
-            })
-            .catch(function(error) {
-                console.error('Error al enviar la confirmación:', error.message);
-                var alertRSVP = document.getElementById('alertRSVP');
-                alertRSVP.textContent = 'Se produjo un error al enviar la confirmación. Inténtalo de nuevo.';
-                alertRSVP.style.display = 'block';
-            });
+
+                db.collection('rsvp').add({
+                    adults: adults,
+                    children: children,
+                    needsTransport: needsTransport,
+                    prebodaAttendance: prebodaAttendance
+                })
+                    .then(function () {
+                        document.getElementById('rsvpForm').style.display = 'none';
+                        var thankYouMessage = document.getElementById('thankYouMessage');
+                        thankYouMessage.style.display = 'block';
+                    })
+                    .catch(function (error) {
+                        console.error('Error al enviar la confirmación:', error.message);
+                        var alertRSVP = document.getElementById('alertRSVP');
+                        alertRSVP.textContent = 'Se produjo un error al enviar la confirmación. Inténtalo de nuevo.';
+                        alertRSVP.style.display = 'block';
+                    });
+            }
         });
 
         // Inicializar el mapa con Leaflet
